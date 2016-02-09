@@ -238,4 +238,18 @@ class MainPage(Handler):
 class StoryPage(Handler):
     pass
 
+class NotFound(Handler):
+    def get(self, path):
+        return self.notfound()
+    
+STORY_RE = r'(/(?:[a-zA-Z0-9_-]+/?)*)'
 app = webapp2.WSGIApplication([('/', MainPage)], debug=True)
+
+app = webapp2.WSGIApplication([('/', MainPage),
+                               ('/signup', Signup),
+                               ('/login', Login),
+                               ('/logout', Logout),
+                               ('/thats-not-my-' + STORY_RE, StoryPage),
+                               (STORY_RE, NotFound)
+                               ],
+                              debug=True)
