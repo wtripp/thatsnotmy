@@ -1,0 +1,21 @@
+html, body {
+    height: 100%;
+    font-family: Comic Sans MS, Georgia, sans-serif;
+    font-size: 16pt;
+    background: #99CCFF;
+    }
+
+a { padding: 5px; }
+    
+.container {
+    width:800px;
+    }
+
+#body_container /* body_container */ {
+    margin: 100px auto;
+    padding-bottom: 50px;
+    min-height: 100%;
+    text-align: center;
+    }
+
+p { padding: 5px; }
