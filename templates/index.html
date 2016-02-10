@@ -1,15 +1,26 @@
-$def with (story)
+{% extends "base.html" %}
 
-    $if story:
-        $for line in story:
-            $if loop.last:
-                <strong>$line</strong>
-            $else:
-                $line
-            <br />
-            <br />
-        <br />
-        <a href="/story">Create another story</a>
+{% block controls %}
+{% endblock %}
 
-    $else:
-        Where's the story?
+{% block content %}
+    <h2>That's Not My... Story Generator</h2>
+    <p>Write a children's book similar to the Usborne 
+    <a href="http://www.usborne.com/catalogue/subject/1~b~bbtnm/that-s-not-my.aspx">
+    That's Not My</a> series.</p>
+    
+    <form class="" method="post">
+        <table>
+            <tr>
+                <td>What's your story about?</td>
+                <td><input type="text" name="subject"></td>
+            </tr>
+            <tr>
+                <td>How many lines long is it?</td>
+                <td><input type="text" name="lines"></td>
+            </tr>
+        </table>
+        <input type="submit">
+    </form>
+    
+{% endblock %}

@@ -18,7 +18,8 @@ template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                autoescape = True)
 
-
+secret = "aDvD/?xhM@Nio6THLAmV.-os|+;C^]U4_TvL/O>IAHFotvqsF.S0V:cH-TjAnZ"
+                               
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
@@ -98,10 +99,10 @@ class User(db.Model):
     pw_hash = db.StringProperty(required=True)
     email = db.StringProperty()
     
-    # Get user id. Use default group because only one wiki right now.
+    # Get user id.
     @classmethod
     def by_id(cls, uid):
-        return User.get_by_id(uid, parent = users_key())
+        return User.get_by_id(uid)
     
     # If user with the input name exists, return the user obj, else return None.
     @classmethod
@@ -119,8 +120,7 @@ class User(db.Model):
     @classmethod
     def register(cls, name, pw, email=None):
         pw_hash = make_pw_hash(name, pw)
-        return User(parent = users_key(),
-                    name = name, 
+        return User(name = name, 
                     pw_hash = pw_hash, 
                     email = email)
 
@@ -233,7 +233,10 @@ class Logout(Handler):
 
 class MainPage(Handler):
     def get(self):
-        self.write("Hello, World")
+        self.render("index.html")
+        
+    def post(self):
+        self.write("I need to write the POST method next.")
         
 class StoryPage(Handler):
     pass
