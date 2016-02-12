@@ -7,6 +7,7 @@ import hashlib
 import hmac
 #import logging
 from string import letters
+from random import randint
 
 import jinja2
 import webapp2
@@ -271,22 +272,23 @@ class MainPage(Handler):
         
         subject = self.request.get('subject')
         lines = self.request.get('lines')        
-        story = create_story(subject,lines)
+        content = create_story(subject,lines)
 
-        s = Story(subject = subject, lines = lines, story = story)
-        s.put()
+        story = Story(subject = subject, lines = int(lines), content = content)
+        story.put()
         
-        self.redirect("/" + s.subject)
+        self.redirect("/thats-not-my-" + subject)
         
 class StoryPage(Handler):
-    def get(self):
+    def get(self, path):
         self.write("We're making progress!")
 
 class NotFound(Handler):
     def get(self, path):
         return self.notfound()
-    
-STORY_RE = r'(/(?:[a-zA-Z0-9_-]+/?)*)'
+
+STORY_RE = r'([a-zA-Z0-9]*)'        
+#STORY_RE = r'(/(?:[a-zA-Z0-9_-]+/?)*)'
 app = webapp2.WSGIApplication([('/', MainPage)], debug=True)
 
 app = webapp2.WSGIApplication([('/', MainPage),

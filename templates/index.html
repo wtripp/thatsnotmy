@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block controls %}
-{% endblock %}12345678901234567890
+{% endblock %}
 
 {% block content %}
     <h2>That's Not My... Story Generator</h2>
@@ -13,8 +13,13 @@
         <table>
             <tr>
                 <td>What's your story about? (limit 20 characters)</td>
-                <td><input type="text" name="subject" 
-                           maxlength="20" value="baby" required></td>
+                <td><input type="text" 
+                           name="subject" 
+                           pattern="[a-zA-Z0-9]{0,20}" 
+                           maxlength="20" 
+                           value="baby" 
+                           required 
+                           title="No symbols or spaces allowed"></td>
             </tr>
             <tr>
                 <td>How many lines long is it? (1-100)</td>
