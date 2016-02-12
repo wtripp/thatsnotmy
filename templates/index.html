@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block controls %}
-{% endblock %}
+{% endblock %}12345678901234567890
 
 {% block content %}
     <h2>That's Not My... Story Generator</h2>
@@ -12,12 +12,14 @@
     <form class="" method="post">
         <table>
             <tr>
-                <td>What's your story about?</td>
-                <td><input type="text" name="subject"></td>
+                <td>What's your story about? (limit 20 characters)</td>
+                <td><input type="text" name="subject" 
+                           maxlength="20" value="baby" required></td>
             </tr>
             <tr>
-                <td>How many lines long is it?</td>
-                <td><input type="text" name="lines"></td>
+                <td>How many lines long is it? (1-100)</td>
+                <td><input type="number" name="lines"
+                           min="1" max="100" value="5" required></td>
             </tr>
         </table>
         <input type="submit">

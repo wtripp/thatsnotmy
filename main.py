@@ -230,16 +230,57 @@ class Logout(Handler):
         self.logout()
         return self.redirect(next_url)
 
+        
+class Story(db.Model):
+    subject = db.StringProperty(required = True)
+    lines = db.IntegerProperty(required = True)
+    content = db.TextProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+        
+def create_story(subject,lines):
+# Need to figure out how to open the txt files.
+    with open("nouns.txt","r") as n:
+        nouns = [line.rstrip('\n') for line in n]
+        
+    with open("adjectives.txt","r") as a:
+        adjectives = [line.rstrip('\n') for line in a]
+
+    story = ""
+    lines = int(lines)
+    for i in range(lines):
+        
+        noun = nouns[randint(0,len(nouns)-1)]
+        nouns.remove(noun)
+        
+        adj = adjectives[randint(0,len(adjectives)-1)]
+        adjectives.remove(adj)
+        
+        if i < lines - 1:    
+            story += "That's not my %s. Its %s is too %s." % (subject, noun, adj)
+        
+        else:
+            story += "That's my %s! Its %s is so %s." % (subject, noun, adj)
+            
+    return story
 
 class MainPage(Handler):
     def get(self):
         self.render("index.html")
         
     def post(self):
-        self.write("I need to write the POST method next.")
+        
+        subject = self.request.get('subject')
+        lines = self.request.get('lines')        
+        story = create_story(subject,lines)
+
+        s = Story(subject = subject, lines = lines, story = story)
+        s.put()
+        
+        self.redirect("/" + s.subject)
         
 class StoryPage(Handler):
-    pass
+    def get(self):
+        self.write("We're making progress!")
 
 class NotFound(Handler):
     def get(self, path):
