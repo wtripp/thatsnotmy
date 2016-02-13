@@ -5,9 +5,10 @@ import re
 import random
 import hashlib
 import hmac
-#import logging
+import logging
 from string import letters
-from random import randint
+
+import words
 
 import jinja2
 import webapp2
@@ -93,8 +94,6 @@ def valid_pw(name, pw, h):
 
 ### End password functions ###
 
-
-    
 class User(db.Model):
     name = db.StringProperty(required=True)
     pw_hash = db.StringProperty(required=True)
@@ -145,10 +144,6 @@ def valid_email(email):
     return not email or EMAIL_RE.match(email)
 
 ### End form validation functions ###
-
-class Story(db.Model):
-    pass
-
 
 class Signup(Handler):
     def get(self):
@@ -239,29 +234,18 @@ class Story(db.Model):
     created = db.DateTimeProperty(auto_now_add = True)
         
 def create_story(subject,lines):
-# Need to figure out how to open the txt files.
-    with open("nouns.txt","r") as n:
-        nouns = [line.rstrip('\n') for line in n]
-        
-    with open("adjectives.txt","r") as a:
-        adjectives = [line.rstrip('\n') for line in a]
 
     story = ""
     lines = int(lines)
-    for i in range(lines):
+    
+    n = random.sample(words.nouns, lines)
+    a = random.sample(words.adjectives, lines)
         
-        noun = nouns[randint(0,len(nouns)-1)]
-        nouns.remove(noun)
-        
-        adj = adjectives[randint(0,len(adjectives)-1)]
-        adjectives.remove(adj)
-        
-        if i < lines - 1:    
-            story += "That's not my %s. Its %s is too %s." % (subject, noun, adj)
-        
-        else:
-            story += "That's my %s! Its %s is so %s." % (subject, noun, adj)
-            
+    for i in range(lines - 1):
+        s = (subject, n.pop(), a.pop())
+        story += "That's not my %s. Its %s is too %s.\n" % s
+    story += "That's my %s! Its %s is so %s." % (subject, n[0], a[0])
+    
     return story
 
 class MainPage(Handler):
@@ -277,7 +261,8 @@ class MainPage(Handler):
         story = Story(subject = subject, lines = int(lines), content = content)
         story.put()
         
-        self.redirect("/thats-not-my-" + subject)
+        self.write(content)
+        #self.redirect("/thats-not-my-" + subject)
         
 class StoryPage(Handler):
     def get(self, path):
