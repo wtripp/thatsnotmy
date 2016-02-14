@@ -1,26 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% for line in story %}
+    <h2>That's Not My {{story.subject | title}}</h2>
+    {% for line in story.content %}
         <p>{{line}}</p>
     {% endfor %}
+    <a href="/">
+        <input type="button" value="Create Another Story">
+    </a>
 {% endblock %}
-
-
-<!--
-$def with (story)
-
-    $if story:
-        $for line in story:
-            $if loop.last:
-                <strong>$line</strong>
-            $else:
-                $line
-            <br />
-            <br />
-        <br />
-        <a href="/story">Create another story</a>
-
-    $else:
-        Where's the story?
--->

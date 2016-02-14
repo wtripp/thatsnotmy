@@ -1,5 +1,3 @@
-import json
-
 with open("nouns.txt") as n:
     nouns = [line.rstrip('\n') for line in n]
     

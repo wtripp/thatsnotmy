@@ -241,7 +241,7 @@ def create_story(subject,lines):
     line = "That's not my %s. Its %s is too %s."
     end = "That's my %s! Its %s is so %s."
     
-    story = [line % (subject, n.pop(), a.pop()) for i in range(lines -1)]
+    story = [line % (subject, n.pop(), a.pop()) for i in range(lines-1)]
     story.append(end % (subject, n[0], a[0]))
     
     return story
@@ -259,21 +259,20 @@ class MainPage(Handler):
         story = Story(subject = subject, lines = lines, content = content)
         story.put()
         self.write(content)
-        #self.redirect("/thats-not-my-" + subject)
+        self.redirect("/thats-not-my-" + subject + 
+                      "?id=" + str(story.key().id()))
         
 class StoryPage(Handler):
     def get(self, path):
-        #story = get_story()
-        #self.render("story.html", )
-        self.write("Hi?")
+        id = int(self.request.get('id'))
+        story = Story.get_by_id(id)
+        self.render("story.html", story = story)
 
 class NotFound(Handler):
     def get(self, path):
         return self.notfound()
 
 STORY_RE = r'([a-zA-Z0-9]*)'        
-app = webapp2.WSGIApplication([('/', MainPage)], debug=True)
-
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/signup', Signup),
                                ('/login', Login),
