@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import os
 import re
 import random
@@ -232,8 +230,13 @@ class Story(db.Model):
     lines = db.IntegerProperty(required = True)
     content = db.ListProperty(str, required = True)
     created = db.DateTimeProperty(auto_now_add = True)
+    
+    @classmethod
+    def get_story(cls, id):
+        id = int(id)
+        return cls.get_by_id(id)
         
-def create_story(subject,lines):
+def create_story(subject, lines):
 
     n = random.sample(words.nouns, lines)
     a = random.sample(words.adjectives, lines)
@@ -264,13 +267,13 @@ class MainPage(Handler):
         
 class StoryPage(Handler):
     def get(self, path):
-        id = int(self.request.get('id'))
-        story = Story.get_by_id(id)
-        self.render("story.html", story = story)
+        id = self.request.get('id')
+        self.render("story.html", story = Story.get_story(id))
 
 class NotFound(Handler):
     def get(self, path):
         return self.notfound()
+
 
 STORY_RE = r'([a-zA-Z0-9]*)'        
 app = webapp2.WSGIApplication([('/', MainPage),
