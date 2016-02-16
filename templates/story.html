@@ -1,11 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>That's Not My {{story.subject | title}}</h2>
-    {% for line in story.content %}
-        <p>{{line}}</p>
-    {% endfor %}
-    <a href="/">
+    <div id="print-content">
+      <form>
+        <h2>That's Not My {{story.subject | title}}</h2>
+        {% for line in story.content %}
+            <p>{{line}}</p>
+        {% endfor %}
+      </form>
+    </div>
+    
+    <input type="button" onClick="printDiv('print-content')" value="Print"/>
+    
+    <a id="create-story" href="/">
         <input type="button" value="Create Another Story">
     </a>
 {% endblock %}

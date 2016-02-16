@@ -1,10 +1,10 @@
 html {
-    height: 100%;
+    height: auto;
 }
 
 body {
     position: relative;
-    height: 100%;
+    height: auto;
     
     font-family: Helvetica, Arial, sans-serif;
     font-size: 14px;
@@ -99,4 +99,8 @@ body {
 
 .history-row:last-child {
     border-bottom-style: none;
+}
+
+#create-story {
+    text-decoration: none;
 }
