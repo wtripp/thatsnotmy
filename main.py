@@ -109,6 +109,14 @@ class User(db.Model):
         return u
     
     @classmethod
+    def get_name(cls, name):
+        user = cls.by_name(name)
+        if user:
+            return user.name
+        else:
+            return ""
+    
+    @classmethod
     def login(cls, name, pw):
         u = cls.by_name(name) # Check if user exists
         if u and valid_pw(name, pw, u.pw_hash): # Check if login pw is valid
@@ -226,15 +234,71 @@ class Logout(Handler):
 
         
 class Story(db.Model):
+    author = db.StringProperty()
     subject = db.StringProperty(required = True)
     lines = db.IntegerProperty(required = True)
     content = db.ListProperty(str, required = True)
     created = db.DateTimeProperty(auto_now_add = True)
-    
+
     @classmethod
-    def get_story(cls, id):
+    def by_id(cls, id):
         id = int(id)
         return cls.get_by_id(id)
+
+    # Get all stories by author, sorted by creation time.         
+    @classmethod
+    def by_author(cls, author):
+        q = cls.all().filter('author =', author)
+        q.order("-created")
+        q = list(q)
+        return q
+
+class Page(db.Model):
+    author = db.StringProperty()
+    content = db.TextProperty()
+    version = db.IntegerProperty()
+    created = db.DateTimeProperty(auto_now_add = True)
+    last_modified = db.DateTimeProperty(auto_now = True)
+    
+    # Get latest version of a page, using memcache.
+    @staticmethod
+    def get_page(path):
+        page = memcache.get(path)
+        if page is not None:
+            return page
+        else:
+            page = Page.by_path(path).get()
+            memcache.set(path, page)
+            return page
+    
+    # Organizes versions of a wiki page based on the page path.
+    @staticmethod
+    def parent_key(path):
+        return db.Key.from_path(path, 'stories')
+    
+    # Set Page.version based on how many versions of the page already exist. 
+    def set_version(self, path):
+        q = Page.by_path(path)
+        q = list(q)
+        self.version = len(q) + 1
+    
+    # Get a specific version of a page.
+    @classmethod
+    def by_id(cls, version, path):
+        q = Page.by_path(path)
+        v = q.filter('version =', version).get()
+        return v
+
+
+
+
+
+
+
+
+
+
+
         
 def create_story(subject, lines):
 
@@ -257,30 +321,58 @@ class MainPage(Handler):
         
         subject = self.request.get('subject')
         lines = int(self.request.get('lines'))        
-        content = create_story(subject,lines)
+        content = create_story(subject, lines)
+        author = self.read_secure_cookie('user_id') and self.user.name
+                
+        story = Story(author = author,
+                      subject = subject,
+                      lines = lines,
+                      content = content)
 
-        story = Story(subject = subject, lines = lines, content = content)
         story.put()
-        self.write(content)
+        
         self.redirect("/thats-not-my-" + subject + 
                       "?id=" + str(story.key().id()))
         
 class StoryPage(Handler):
     def get(self, path):
         id = self.request.get('id')
-        self.render("story.html", story = Story.get_story(id))
+        self.render("story.html", story = Story.by_id(id))
 
+        
+class SavedStories(Handler):
+    def get(self):
+        if self.user:
+            stories = Story.by_author(self.user.name)
+            self.render("stories.html", stories = stories)
+        else:
+            self.redirect("/login")
+
+
+class HistoryPage(Handler):
+    def get(self, path):
+        q = Page.by_path(path)
+        q.fetch(limit = 100)
+        
+        posts = list(q)
+        if posts:
+            self.render("history.html", path = path, posts = posts)
+        else:
+            self.redirect("/_edit" + path)
+        
+        
 class NotFound(Handler):
     def get(self, path):
         return self.notfound()
-
-
-STORY_RE = r'([a-zA-Z0-9]*)'        
+        
+        
+RE = r'([a-zA-Z0-9]*)'     
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/signup', Signup),
                                ('/login', Login),
                                ('/logout', Logout),
-                               ('/thats-not-my-' + STORY_RE, StoryPage),
-                               (STORY_RE, NotFound)
+                               ('/stories', SavedStories),
+                               ('/thats-not-my-' + RE, StoryPage),
+                               (RE, NotFound)
                                ],
                               debug=True)

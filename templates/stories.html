@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table class="history-table">
+    {% for s in stories %}
+        <tr class="history-row">
+            <td class="date-cell">
+                {{s.created.strftime("%c")}}
+            </td>
+            
+            <td class ="content-cell">
+                {{s.content[:100]}}
+            </td>
+            <!--
+            <td class="link-cell">
+                <a class="gray-link" href="{{path}}?v={{s.version}}">view</a>
+            </td>
+            
+            {% if user %}
+            <td class="link-cell">
+                <a class="gray-link" href="/_edit{{path}}?v={{s.version}}">edit</a>
+            </td>
+            {% endif %}
+            -->
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}

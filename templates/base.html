@@ -9,30 +9,25 @@
     <title>That's Not My...</title>
 </head>
 
-<body>    
+<body>
     <div class="header">
         <div class="controls">
             {% if user %}
-                {{user.name}} (<a class="gray-link" href="/logout">logout</a>)
+                <a class="gray-link" href="/stories">{{user.name}}</a>
+                (<a class="gray-link" href="/logout">logout</a>)
             {% else %}
                 <a class="gray-link" href="/login">login</a>
                 |
                 <a class="gray-link" href="/signup">signup</a>
             {% endif %}
-        </div>
-        
-        <div class="controls">  
-            {% block controls %}
-            {% endblock %}
-        </div>
-        
+        </div>        
     </div>
-        
+
     <div id="content">
         {% block content %}
         {% endblock %}
     </div>
-    
+
 </body>
-    
+
 </html>
