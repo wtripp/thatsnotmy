@@ -77,27 +77,34 @@ body {
     font-size: 18px;
 }
 
-.history-table {
+.story-table {
     border-collapse: collapse;
+    width: 100%;
 }
 
-.history-table .date-cell {
+.story-table td {
+    padding: 15px 0;
+}
+
+.story-table .date-cell {
     width: 200px;
 }
 
-.history-table .content-cell {
-    padding: 10px;
+.story-table .subject-cell {
+    font-weight: bold;
+    width: 300px;
 }
 
-.history-table .link-cell {
-    padding: 0 5px;
+.story-table .link-cell {
+    width: 100px;
+    text-align: right;
 }
 
-.history-row {
+.story-row {
     border-bottom: 1px solid #333;
 }
 
-.history-row:last-child {
+.story-row:last-child {
     border-bottom-style: none;
 }
 

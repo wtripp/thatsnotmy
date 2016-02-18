@@ -1,27 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-<table class="history-table">
+<h2>Your Stories</h2>
+<table class="story-table">
     {% for s in stories %}
-        <tr class="history-row">
+        <tr class="story-row">
             <td class="date-cell">
                 {{s.created.strftime("%c")}}
             </td>
             
-            <td class ="content-cell">
-                {{s.content[:100]}}
-            </td>
-            <!--
-            <td class="link-cell">
-                <a class="gray-link" href="{{path}}?v={{s.version}}">view</a>
+            <td class ="subject-cell">
+                That's Not My {{s.subject | title}}
             </td>
             
-            {% if user %}
-            <td class="link-cell">
-                <a class="gray-link" href="/_edit{{path}}?v={{s.version}}">edit</a>
+            <td>
+                {{s.lines}} lines
             </td>
-            {% endif %}
-            -->
+            
+            <td>
+                <a class="gray-link"
+                   href="/thats-not-my-{{s.subject}}?id={{s.key().id()}}">
+                   view</a>
+            </td>
+            
         </tr>
     {% endfor %}
 </table>

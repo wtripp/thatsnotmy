@@ -109,14 +109,6 @@ class User(db.Model):
         return u
     
     @classmethod
-    def get_name(cls, name):
-        user = cls.by_name(name)
-        if user:
-            return user.name
-        else:
-            return ""
-    
-    @classmethod
     def login(cls, name, pw):
         u = cls.by_name(name) # Check if user exists
         if u and valid_pw(name, pw, u.pw_hash): # Check if login pw is valid
@@ -150,6 +142,7 @@ def valid_email(email):
     return not email or EMAIL_RE.match(email)
 
 ### End form validation functions ###
+
 
 class Signup(Handler):
     def get(self):
@@ -253,52 +246,6 @@ class Story(db.Model):
         q = list(q)
         return q
 
-class Page(db.Model):
-    author = db.StringProperty()
-    content = db.TextProperty()
-    version = db.IntegerProperty()
-    created = db.DateTimeProperty(auto_now_add = True)
-    last_modified = db.DateTimeProperty(auto_now = True)
-    
-    # Get latest version of a page, using memcache.
-    @staticmethod
-    def get_page(path):
-        page = memcache.get(path)
-        if page is not None:
-            return page
-        else:
-            page = Page.by_path(path).get()
-            memcache.set(path, page)
-            return page
-    
-    # Organizes versions of a wiki page based on the page path.
-    @staticmethod
-    def parent_key(path):
-        return db.Key.from_path(path, 'stories')
-    
-    # Set Page.version based on how many versions of the page already exist. 
-    def set_version(self, path):
-        q = Page.by_path(path)
-        q = list(q)
-        self.version = len(q) + 1
-    
-    # Get a specific version of a page.
-    @classmethod
-    def by_id(cls, version, path):
-        q = Page.by_path(path)
-        v = q.filter('version =', version).get()
-        return v
-
-
-
-
-
-
-
-
-
-
-
         
 def create_story(subject, lines):
 
@@ -312,6 +259,7 @@ def create_story(subject, lines):
     story.append(end % (subject, n[0], a[0]))
     
     return story
+
 
 class MainPage(Handler):
     def get(self):
@@ -339,7 +287,7 @@ class StoryPage(Handler):
         id = self.request.get('id')
         self.render("story.html", story = Story.by_id(id))
 
-        
+
 class SavedStories(Handler):
     def get(self):
         if self.user:
@@ -349,23 +297,11 @@ class SavedStories(Handler):
             self.redirect("/login")
 
 
-class HistoryPage(Handler):
-    def get(self, path):
-        q = Page.by_path(path)
-        q.fetch(limit = 100)
-        
-        posts = list(q)
-        if posts:
-            self.render("history.html", path = path, posts = posts)
-        else:
-            self.redirect("/_edit" + path)
-        
-        
 class NotFound(Handler):
     def get(self, path):
         return self.notfound()
-        
-        
+
+
 RE = r'([a-zA-Z0-9]*)'     
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/signup', Signup),
