@@ -1,5 +1,13 @@
 {% extends "base.html" %}
 
+{% block controls %}
+    <a class="gray-link" href="/">home</a>
+    {% if user %}
+    |
+    <a class="gray-link" href="/stories">stories</a>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <div id="print-content">
       <form>

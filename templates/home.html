@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block controls %}
+    {% if user %}
+        <a class="gray-link" href="/stories">stories</a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -17,14 +20,13 @@
                            name="subject" 
                            pattern="[a-zA-Z0-9]{0,20}" 
                            maxlength="20" 
-                           value="baby" 
                            required 
                            title="No symbols or spaces allowed"></td>
             </tr>
             <tr>
                 <td>How many lines long is it? (1-100)</td>
                 <td><input type="number" name="lines"
-                           min="1" max="100" value="5" required></td>
+                           min="1" max="100" required></td>
             </tr>
         </table>
         <input type="submit">

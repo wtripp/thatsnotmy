@@ -11,7 +11,7 @@ import words
 import jinja2
 import webapp2
 
-#from google.appengine.api import memcache
+from google.appengine.api import memcache
 from google.appengine.ext import db
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
@@ -234,9 +234,15 @@ class Story(db.Model):
     created = db.DateTimeProperty(auto_now_add = True)
 
     @classmethod
-    def by_id(cls, id):
-        id = int(id)
-        return cls.get_by_id(id)
+    def by_id(cls, id, path):
+        story = memcache.get(path)
+        if story is not None:
+            return story
+        else:
+            id = int(id)
+            story = cls.get_by_id(id)
+            memcache.set(path, story)
+            return story
 
     # Get all stories by author, sorted by creation time.         
     @classmethod
@@ -263,29 +269,30 @@ def create_story(subject, lines):
 
 class MainPage(Handler):
     def get(self):
-        self.render("index.html")
-        
+        self.render("home.html")
+
     def post(self):
-        
+
         subject = self.request.get('subject')
         lines = int(self.request.get('lines'))        
         content = create_story(subject, lines)
         author = self.read_secure_cookie('user_id') and self.user.name
-                
+           
         story = Story(author = author,
                       subject = subject,
                       lines = lines,
                       content = content)
 
         story.put()
-        
-        self.redirect("/thats-not-my-" + subject + 
-                      "?id=" + str(story.key().id()))
-        
+        path =  "/thats-not-my-" + subject + "?id=" + str(story.key().id())
+        memcache.set(path, story)
+
+        self.redirect(path)
+
 class StoryPage(Handler):
     def get(self, path):
         id = self.request.get('id')
-        self.render("story.html", story = Story.by_id(id))
+        self.render("story.html", story = Story.by_id(id, path))
 
 
 class SavedStories(Handler):
