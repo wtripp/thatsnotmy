@@ -5,6 +5,7 @@ import hashlib
 import hmac
 import logging
 from string import letters
+import time
 
 import words
 
@@ -251,6 +252,10 @@ class Story(db.Model):
         q.order("-created")
         q = list(q)
         return q
+        
+    def date_created(self):
+        t = self.created
+        return t.strftime("%c") + " GMT"
 
         
 def create_story(subject, lines):

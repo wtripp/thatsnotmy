@@ -10,7 +10,8 @@
     {% for s in stories %}
         <tr class="story-row">
             <td class="date-cell">
-                {{s.created.strftime("%c")}}
+                {{s.date_created()}}
+            <!--    {{s.created.strftime("%c")}} -->
             </td>
             
             <td class ="subject-cell">
