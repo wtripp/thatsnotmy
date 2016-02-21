@@ -18,10 +18,10 @@
                 <td>What's your story about? (limit 20 characters)</td>
                 <td><input type="text" 
                            name="subject" 
-                           pattern="[a-zA-Z0-9]{0,20}" 
+                           pattern="[a-zA-Z0-9\s\-]{0,20}" 
                            maxlength="20" 
                            required 
-                           title="No symbols or spaces allowed"></td>
+                           title="Only numbers, letters, spaces, and hyphens allowed."></td>
             </tr>
             <tr>
                 <td>How many lines long is it? (1-100)</td>
@@ -29,7 +29,7 @@
                            min="1" max="100" required></td>
             </tr>
         </table>
-        <input type="submit">
+        <input type="submit" value="Create My Story">
     </form>
     
 {% endblock %}

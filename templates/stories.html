@@ -7,11 +7,14 @@
 {% block content %}
 <h2>Your Stories</h2>
 <table class="story-table">
+    {% if not stories %}
+        <p>You have no stories yet. Why not try <a href="/">creating a story</a>?</p>
+    {% endif %}
+
     {% for s in stories %}
         <tr class="story-row">
             <td class="date-cell">
                 {{s.date_created()}}
-            <!--    {{s.created.strftime("%c")}} -->
             </td>
             
             <td class ="subject-cell">

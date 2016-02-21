@@ -148,13 +148,14 @@ def valid_email(email):
 class Signup(Handler):
     def get(self):
         next_url = self.request.headers.get('referer', '/')
+        logging.warning(next_url)
         self.render("signup.html", next_url = next_url)
 
     def post(self):
         have_error = False
         
         next_url = str(self.request.get('next_url'))
-        if not next_url or next_url.startswith('/login'):
+        if not next_url or next_url.endswith('/login'):
             next_url = '/'
         
         self.username = self.request.get('username')
@@ -208,7 +209,7 @@ class Login(Handler):
         
         next_url = str(self.request.get('next_url'))
 
-        if not next_url or next_url.startswith('/login'):
+        if not next_url or next_url.endswith('/login'):
             next_url = '/'
 
         u = User.login(username, password)
@@ -282,13 +283,16 @@ class MainPage(Handler):
         lines = int(self.request.get('lines'))        
         content = create_story(subject, lines)
         author = self.read_secure_cookie('user_id') and self.user.name
-           
+        
+        
         story = Story(author = author,
                       subject = subject,
                       lines = lines,
                       content = content)
 
         story.put()
+        
+        subject = subject.replace(" ","-").lower() # Replace spaces with dashes
         path =  "/thats-not-my-" + subject + "?id=" + str(story.key().id())
         memcache.set(path, story)
 
@@ -314,7 +318,7 @@ class NotFound(Handler):
         return self.notfound()
 
 
-RE = r'([a-zA-Z0-9]*)'     
+RE = r'([a-zA-Z0-9\-]*)'     
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/signup', Signup),
                                ('/login', Login),
