@@ -15,7 +15,10 @@
     <form class="" method="post">
         <table>
             <tr>
-                <td>What's your story about? (limit 20 characters)</td>
+                <td>What's your story about?</td>
+            </tr>
+            
+            <tr>
                 <td><input type="text" 
                            name="subject" 
                            pattern="[a-zA-Z0-9\s\-]{0,20}" 
@@ -23,13 +26,26 @@
                            required 
                            title="Only numbers, letters, spaces, and hyphens allowed."></td>
             </tr>
+            
             <tr>
-                <td>How many lines long is it? (1-100)</td>
+                <td class="limit">(limit 20 characters; letters, numbers, spaces, and hyphens only)</td>
+            </tr>
+            
+            <tr>
+                <td>How many lines long is it?</td>
+            </tr>
+            
+            <tr>
                 <td><input type="number" name="lines"
                            min="1" max="100" required></td>
             </tr>
+            
+            <tr>
+                <td class="limit">(1-100)</td>
+            </tr>
+
         </table>
-        <input type="submit" value="Create My Story">
+        <input class="btn" type="submit" value="Create My Story">
     </form>
     
 {% endblock %}

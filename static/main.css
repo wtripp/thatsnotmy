@@ -1,17 +1,22 @@
 html {
     height: auto;
+    background-color: #e6eeff;
 }
 
 body {
     position: relative;
     height: auto;
     
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 14px;
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-size: 18px;
 
     width: 800px;
     margin: 0 auto;
     color: #333;
+}
+
+input {
+    height: 20px;
 }
 
 .header {
@@ -45,36 +50,7 @@ body {
 
 .error {
     color: red;
-}
-
-.main-edit {
-    position: absolute;
-    top: 45px;
-    right: 0;
-    bottom: 10px;
-    left: 0;
-}
-
-.main-edit textarea {
-    width: 100%;
-    position: absolute;
-    top: 0;
-    bottom: 30px;
-    left: 0;
-    right: 0;
     font-size: 14px;
-}
-
-.form-footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 30px;
-}
-
-.main-edit button {
-    font-size: 18px;
 }
 
 .story-table {
@@ -84,6 +60,7 @@ body {
 
 .story-table td {
     padding: 15px 0;
+    font-size: 14px;
 }
 
 .story-table .date-cell {
@@ -92,12 +69,13 @@ body {
 
 .story-table .subject-cell {
     font-weight: bold;
-    width: 300px;
+    width: 400px;
 }
 
 .story-table .link-cell {
     width: 100px;
     text-align: right;
+    font-size
 }
 
 .story-row {
@@ -110,4 +88,24 @@ body {
 
 #create-story {
     text-decoration: none;
+}
+
+.btn {
+  height: 100%;
+  background: #1e96e6;
+  text-decoration: none;
+  font-size: 20px;
+  color: white;
+  font-weight: bold;
+}
+
+.btn:hover {
+  background: #3cb0fd;
+  text-decoration: none;
+}
+
+.limit {
+    color: gray;
+    padding-bottom: 20px;
+    font-size: 14px;
 }
